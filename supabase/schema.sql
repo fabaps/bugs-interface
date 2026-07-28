@@ -11,6 +11,7 @@ create table if not exists public.reportes (
   que_esperaba text,
   que_paso text,
   descripcion text,
+  fecha_entrega date,
   created_at timestamptz not null default now(),
   constraint contenido_valido check (
     (tipo = 'bug' and que_paso is not null and length(trim(que_paso)) > 0)
@@ -45,8 +46,9 @@ create policy "equipo_puede_actualizar"
   with check (true);
 
 -- Aunque haya política de UPDATE, limitamos a nivel de columna: el
--- panel solo necesita cambiar "estado", nunca el contenido del reporte.
+-- panel solo necesita cambiar "estado" y "fecha_entrega", nunca el
+-- contenido del reporte.
 revoke update on public.reportes from authenticated;
-grant update (estado) on public.reportes to authenticated;
+grant update (estado, fecha_entrega) on public.reportes to authenticated;
 
 create index if not exists reportes_proyecto_idx on public.reportes (proyecto);

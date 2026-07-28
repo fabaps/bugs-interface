@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import { DESC_LABEL } from "@/lib/proyectos";
@@ -8,7 +9,7 @@ import { DESC_LABEL } from "@/lib/proyectos";
 const TIPO_OPTS = [
   { id: "bug", emoji: "🐞", label: "Bug" },
   { id: "mejora", emoji: "✨", label: "Mejora" },
-  { id: "recomendacion", emoji: "💡", label: "Recomendación" },
+  { id: "recomendacion", emoji: "💡", label: "Cambio Personalizado" },
 ];
 
 export default function ReportForm({ proyecto }) {
@@ -85,7 +86,13 @@ export default function ReportForm({ proyecto }) {
     <div className="wrap">
       <div className="topbar">
         <div className="brand">
-          <span className="mark">{proyecto.ico}</span>
+          <span className={`mark${proyecto.logo ? " haslogo" : ""}`}>
+            {proyecto.logo ? (
+              <Image src={proyecto.logo} alt={proyecto.nombre} width={34} height={34} priority />
+            ) : (
+              proyecto.ico
+            )}
+          </span>
           <div>
             <div className="who">{proyecto.nombre}</div>
             <div className="by">Soporte por RebelCoderz</div>
@@ -101,7 +108,7 @@ export default function ReportForm({ proyecto }) {
         <>
           <h1>¿Encontraste algo en {proyecto.nombre}?</h1>
           <p className="lead">
-            Reporta un problema, sugiere una mejora o déjanos una recomendación.
+            Reporta un problema, sugiere una mejora o pide un cambio personalizado.
           </p>
 
           <form className="card" onSubmit={enviarReporte}>

@@ -45,7 +45,17 @@ export default async function PanelIndexPage() {
               marginBottom: "8px",
             }}
           >
-            <span className="e">{p.ico}</span>
+            {p.logo ? (
+              <Image
+                src={p.logo}
+                alt={p.nombre}
+                width={28}
+                height={28}
+                style={{ objectFit: "contain", borderRadius: "6px" }}
+              />
+            ) : (
+              <span className="e">{p.ico}</span>
+            )}
             <span className="t" style={{ fontSize: "14px" }}>
               {p.nombre}
             </span>
