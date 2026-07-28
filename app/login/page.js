@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
@@ -37,7 +38,9 @@ export default function LoginPage() {
     <div className="wrap">
       <div className="topbar">
         <div className="brand">
-          <span className="mark">⚡</span>
+          <span className="mark">
+            <Image src="/rebelcoderz-mark.png" alt="RebelCoderz" width={22} height={22} priority />
+          </span>
           <div>
             <div className="who">RebelCoderz</div>
             <div className="by">Panel de administración</div>

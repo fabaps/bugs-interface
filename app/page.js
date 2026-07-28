@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export default function HomePage() {
@@ -5,7 +6,9 @@ export default function HomePage() {
     <div className="wrap">
       <div className="topbar">
         <div className="brand">
-          <span className="mark">⚡</span>
+          <span className="mark">
+            <Image src="/rebelcoderz-mark.png" alt="RebelCoderz" width={22} height={22} priority />
+          </span>
           <div>
             <div className="who">RebelCoderz</div>
             <div className="by">Sistema de reportes</div>
