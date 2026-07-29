@@ -2,7 +2,7 @@
 
 create table if not exists public.reportes (
   id uuid primary key default gen_random_uuid(),
-  proyecto text not null check (proyecto in ('mystylecases', 'liga-cancer', 'tennis', 'crm')),
+  proyecto text not null check (proyecto in ('mystylecases', 'liga-cancer', 'tennis', 'crm', 'campus-adep')),
   tipo text not null check (tipo in ('bug', 'mejora', 'recomendacion')),
   prioridad smallint not null default 2 check (prioridad in (1, 2, 3)),
   nombre text not null default 'Anónimo',
@@ -51,5 +51,12 @@ create policy "equipo_puede_actualizar"
 -- contenido del reporte.
 revoke update on public.reportes from authenticated;
 grant update (estado, fecha_entrega) on public.reportes to authenticated;
+
+-- Solo el equipo (con sesión iniciada) puede borrar reportes.
+create policy "equipo_puede_borrar"
+  on public.reportes
+  for delete
+  to authenticated
+  using (true);
 
 create index if not exists reportes_proyecto_idx on public.reportes (proyecto);

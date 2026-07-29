@@ -196,11 +196,11 @@ export default function ReportForm({ proyecto }) {
 
             <div className="field">
               <label>
-                Tu nombre <span className="hint">(opcional)</span>
+                Tu Nombre - Empresa <span className="hint">(opcional)</span>
               </label>
               <input
                 type="text"
-                placeholder="Ej. María López"
+                placeholder="Ej. Fabian Perdomo - RebelCoderz"
                 value={nombre}
                 onChange={(e) => setNombre(e.target.value)}
               />

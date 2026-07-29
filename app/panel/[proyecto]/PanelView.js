@@ -118,6 +118,23 @@ export default function PanelView({ proyecto, initialReportes }) {
     }
   }
 
+  async function borrarReporte(id) {
+    if (!window.confirm("¿Borrar este reporte? Esta acción no se puede deshacer.")) {
+      return;
+    }
+
+    const anterior = reportes;
+    setReportes((rs) => rs.filter((r) => r.id !== id));
+
+    const supabase = createClient();
+    const { error: dbError } = await supabase.from("reportes").delete().eq("id", id);
+
+    if (dbError) {
+      setError("No se pudo borrar el reporte. Intenta de nuevo.");
+      setReportes(anterior);
+    }
+  }
+
   return (
     <div className="wrap">
       <div className="topbar">
@@ -197,6 +214,14 @@ export default function PanelView({ proyecto, initialReportes }) {
     return (
       <div className={`report b-${r.tipo}`} key={r.id}>
         <div className="top">
+          <button
+            type="button"
+            className="deletebtn"
+            onClick={() => borrarReporte(r.id)}
+            title="Borrar reporte"
+          >
+            🗑️
+          </button>
           <span className={`pbadge p-${r.prioridad}`}>P{r.prioridad}</span>
         </div>
         <div className="desc">
