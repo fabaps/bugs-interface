@@ -65,7 +65,17 @@ function Cuerpo({ r }) {
       </>
     );
   }
-  return <>{r.descripcion}</>;
+  return (
+    <>
+      {r.titulo && (
+        <>
+          <strong>{r.titulo}</strong>
+          <br />
+        </>
+      )}
+      {r.descripcion}
+    </>
+  );
 }
 
 export default function PanelView({ proyecto, initialReportes }) {

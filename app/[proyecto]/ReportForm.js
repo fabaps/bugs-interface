@@ -14,6 +14,7 @@ const TIPO_OPTS = [
 
 export default function ReportForm({ proyecto }) {
   const [tipo, setTipo] = useState(null);
+  const [titulo, setTitulo] = useState("");
   const [desc, setDesc] = useState("");
   const [hacia, setHacia] = useState("");
   const [espera, setEspera] = useState("");
@@ -26,6 +27,7 @@ export default function ReportForm({ proyecto }) {
 
   function resetForm() {
     setTipo(null);
+    setTitulo("");
     setDesc("");
     setHacia("");
     setEspera("");
@@ -66,6 +68,7 @@ export default function ReportForm({ proyecto }) {
         setError("Por favor escribe tu reporte.");
         return;
       }
+      rep.titulo = titulo.trim() || null;
       rep.descripcion = desc.trim();
     }
 
@@ -151,14 +154,29 @@ export default function ReportForm({ proyecto }) {
                 />
               </div>
             ) : (
-              <div className="field">
-                <label>{tipo ? DESC_LABEL[tipo] : "Cuéntanos"}</label>
-                <textarea
-                  placeholder="Escribe aquí..."
-                  value={desc}
-                  onChange={(e) => setDesc(e.target.value)}
-                />
-              </div>
+              <>
+                {tipo && (
+                  <div className="field">
+                    <label>
+                      Título <span className="hint">(opcional)</span>
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Ej. Ordenar productos por precio"
+                      value={titulo}
+                      onChange={(e) => setTitulo(e.target.value)}
+                    />
+                  </div>
+                )}
+                <div className="field">
+                  <label>{tipo ? DESC_LABEL[tipo] : "Cuéntanos"}</label>
+                  <textarea
+                    placeholder="Escribe aquí..."
+                    value={desc}
+                    onChange={(e) => setDesc(e.target.value)}
+                  />
+                </div>
+              </>
             )}
 
             <div className="field">

@@ -10,6 +10,7 @@ create table if not exists public.reportes (
   que_hacia text,
   que_esperaba text,
   que_paso text,
+  titulo text,
   descripcion text,
   fecha_entrega date,
   created_at timestamptz not null default now(),
