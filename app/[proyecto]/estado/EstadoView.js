@@ -106,7 +106,7 @@ export default function EstadoView({ proyecto, reportes }) {
   const [filtro, setFiltro] = useState("todos");
   const [mes, setMes] = useState("todos");
 
-  function renderCard(r, { showTipo = false } = {}) {
+  function renderCard(r, { showTipo = false, entregaTag = false } = {}) {
     return (
       <div className={`report b-${r.tipo}`} key={r.id}>
         <div className="top">
@@ -122,11 +122,15 @@ export default function EstadoView({ proyecto, reportes }) {
         </div>
         <div className="metaline">
           <span>👤 {r.nombre}</span>
-          <span>🕐 {fmtFecha(r.created_at)}</span>
-          <span>
-            📅 Entrega:{" "}
-            {r.fecha_entrega ? fmtEntrega(r.fecha_entrega) : "pendiente"}
-          </span>
+          <span>🕐 Creado: {fmtFecha(r.created_at)}</span>
+          {entregaTag && r.fecha_entrega ? (
+            <span className="entregatag">📅 Entrega: {fmtEntrega(r.fecha_entrega)}</span>
+          ) : (
+            <span>
+              📅 Entrega:{" "}
+              {r.fecha_entrega ? fmtEntrega(r.fecha_entrega) : "pendiente"}
+            </span>
+          )}
         </div>
         <div className="statusrow">
           <span className={`pill ${ESTADO_CLASS[r.estado]}`}>
@@ -253,7 +257,35 @@ export default function EstadoView({ proyecto, reportes }) {
               {items.length === 0 ? (
                 <div className="empty">Nada por aquí todavía.</div>
               ) : (
-                items.map((r) => renderCard(r, { showTipo: true }))
+                (() => {
+                  const conFecha = items.filter((r) => r.fecha_entrega);
+                  const sinFecha = items.filter((r) => !r.fecha_entrega);
+                  return (
+                    <>
+                      {conFecha.length > 0 && (
+                        <div className="timeline">
+                          {conFecha.map((r) => (
+                            <div className="timeline-item" key={r.id}>
+                              <div className="timeline-rail">
+                                <div className="timeline-dot" />
+                                <div className="timeline-line" />
+                              </div>
+                              {renderCard(r, { showTipo: true, entregaTag: true })}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {sinFecha.length > 0 && (
+                        <>
+                          <p className="lead" style={{ fontSize: "13px", margin: "6px 0" }}>
+                            Sin fecha asignada
+                          </p>
+                          {sinFecha.map((r) => renderCard(r, { showTipo: true }))}
+                        </>
+                      )}
+                    </>
+                  );
+                })()
               )}
             </div>
           );

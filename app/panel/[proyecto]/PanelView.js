@@ -204,7 +204,7 @@ export default function PanelView({ proyecto, initialReportes }) {
         </div>
         <div className="metaline">
           <span>👤 {r.nombre}</span>
-          <span>🕐 {fmtFecha(r.created_at)}</span>
+          <span>🕐 Creado: {fmtFecha(r.created_at)}</span>
           <span>
             📅 Entrega:{" "}
             {r.fecha_entrega ? fmtEntrega(r.fecha_entrega) : "pendiente"}
