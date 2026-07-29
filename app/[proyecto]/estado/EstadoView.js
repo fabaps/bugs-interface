@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { TIPOS } from "@/lib/proyectos";
 
-const ESTADO_LABEL = { nuevo: "Nuevo", revision: "En revisión", resuelto: "Resuelto" };
+const ESTADO_LABEL = { nuevo: "En revisión", revision: "En pruebas", resuelto: "Resuelto" };
 const ESTADO_CLASS = { nuevo: "on-new", revision: "on-rev", resuelto: "on-done" };
 
 const FILTROS = [
@@ -14,7 +14,36 @@ const FILTROS = [
   { id: "mejora", label: "Mejoras" },
   { id: "recomendacion", label: "Cambios Personalizados" },
   { id: "resueltos", label: "Resueltos" },
+  { id: "cronograma", label: "📅 Cronograma" },
 ];
+
+const TIPO_EMOJI = { bug: "🐞", mejora: "✨", recomendacion: "💡" };
+const TIPO_LABEL = { bug: "Bug", mejora: "Mejora", recomendacion: "Cambio Personalizado" };
+
+// Ordena por fecha de entrega (más lejana primero); sin fecha va al final.
+function ordenarPorCronograma(items) {
+  return [...items].sort((a, b) => {
+    if (!a.fecha_entrega && !b.fecha_entrega) return 0;
+    if (!a.fecha_entrega) return 1;
+    if (!b.fecha_entrega) return -1;
+    return b.fecha_entrega.localeCompare(a.fecha_entrega);
+  });
+}
+
+const MESES = [
+  "enero", "febrero", "marzo", "abril", "mayo", "junio",
+  "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre",
+];
+
+// "YYYY-MM-DD" -> "YYYY-MM"
+function mesDe(ymd) {
+  return ymd.slice(0, 7);
+}
+
+function labelMes(yyyyMm) {
+  const [y, m] = yyyyMm.split("-").map(Number);
+  return `${MESES[m - 1]} ${y}`;
+}
 
 function fmtFecha(iso) {
   return new Date(iso).toLocaleDateString("es", {
@@ -75,11 +104,17 @@ function Cuerpo({ r }) {
 
 export default function EstadoView({ proyecto, reportes }) {
   const [filtro, setFiltro] = useState("todos");
+  const [mes, setMes] = useState("todos");
 
-  function renderCard(r) {
+  function renderCard(r, { showTipo = false } = {}) {
     return (
       <div className={`report b-${r.tipo}`} key={r.id}>
         <div className="top">
+          {showTipo && (
+            <span className="tipobadge">
+              {TIPO_EMOJI[r.tipo]} {TIPO_LABEL[r.tipo]}
+            </span>
+          )}
           <span className={`pbadge p-${r.prioridad}`}>P{r.prioridad}</span>
         </div>
         <div className="desc">
@@ -170,6 +205,7 @@ export default function EstadoView({ proyecto, reportes }) {
 
       {filtro !== "todos" &&
         filtro !== "resueltos" &&
+        filtro !== "cronograma" &&
         (() => {
           const tp = TIPOS.find((t) => t.id === filtro);
           return renderGrupo(
@@ -180,6 +216,48 @@ export default function EstadoView({ proyecto, reportes }) {
         })()}
 
       {filtro === "resueltos" && renderGrupo("✅ Resueltos", resueltos, "resueltos")}
+
+      {filtro === "cronograma" &&
+        (() => {
+          const mesesDisponibles = [
+            ...new Set(
+              reportes.filter((r) => r.fecha_entrega).map((r) => mesDe(r.fecha_entrega))
+            ),
+          ].sort();
+
+          const items = ordenarPorCronograma(
+            mes === "todos"
+              ? reportes
+              : reportes.filter((r) => r.fecha_entrega && mesDe(r.fecha_entrega) === mes)
+          );
+
+          return (
+            <div className="group">
+              <h2>
+                📅 Cronograma <span className="cnt">{items.length}</span>
+              </h2>
+              <p className="lead" style={{ marginTop: "-6px", marginBottom: "10px" }}>
+                Ordenado por fecha de entrega, del más lejano al más próximo.
+              </p>
+              <div className="field" style={{ maxWidth: "260px" }}>
+                <label>Filtrar por mes de entrega</label>
+                <select className="f" value={mes} onChange={(e) => setMes(e.target.value)}>
+                  <option value="todos">Todos los meses</option>
+                  {mesesDisponibles.map((m) => (
+                    <option key={m} value={m}>
+                      {labelMes(m)}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              {items.length === 0 ? (
+                <div className="empty">Nada por aquí todavía.</div>
+              ) : (
+                items.map((r) => renderCard(r, { showTipo: true }))
+              )}
+            </div>
+          );
+        })()}
 
       <p className="footlink">
         <Link href="/login">🔒 Equipo RebelCoderz</Link>

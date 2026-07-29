@@ -8,8 +8,8 @@ import { TIPOS } from "@/lib/proyectos";
 import LogoutButton from "../LogoutButton";
 
 const ESTADOS = [
-  { id: "nuevo", label: "Nuevo", cls: "on-new" },
-  { id: "revision", label: "En revisión", cls: "on-rev" },
+  { id: "nuevo", label: "En revisión", cls: "on-new" },
+  { id: "revision", label: "En pruebas", cls: "on-rev" },
   { id: "resuelto", label: "Resuelto", cls: "on-done" },
 ];
 
