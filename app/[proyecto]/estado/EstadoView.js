@@ -3,12 +3,12 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { TIPOS } from "@/lib/proyectos";
+import { tiposDe } from "@/lib/proyectos";
 
 const ESTADO_LABEL = { nuevo: "En revisión", revision: "En pruebas", resuelto: "Resuelto" };
 const ESTADO_CLASS = { nuevo: "on-new", revision: "on-rev", resuelto: "on-done" };
 
-const FILTROS = [
+const FILTROS_BASE = [
   { id: "todos", label: "Todos" },
   { id: "bug", label: "Bugs" },
   { id: "mejora", label: "Mejoras" },
@@ -103,6 +103,11 @@ function Cuerpo({ r }) {
 }
 
 export default function EstadoView({ proyecto, reportes }) {
+  const TIPOS = tiposDe(proyecto);
+  const FILTROS = proyecto.sinBugs
+    ? FILTROS_BASE.filter((f) => f.id !== "bug")
+    : FILTROS_BASE;
+
   const [filtro, setFiltro] = useState("todos");
   const [mes, setMes] = useState("todos");
 

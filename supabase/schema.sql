@@ -2,7 +2,7 @@
 
 create table if not exists public.reportes (
   id uuid primary key default gen_random_uuid(),
-  proyecto text not null check (proyecto in ('mystylecases', 'liga-cancer', 'tennis', 'crm', 'campus-adep')),
+  proyecto text not null check (proyecto in ('mystylecases', 'liga-cancer', 'tennis', 'crm', 'campus-adep', 'mm', 'del-atlantico')),
   tipo text not null check (tipo in ('bug', 'mejora', 'recomendacion')),
   prioridad smallint not null default 2 check (prioridad in (1, 2, 3)),
   nombre text not null default 'Anónimo',

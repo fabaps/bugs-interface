@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
-import { TIPOS } from "@/lib/proyectos";
+import { tiposDe } from "@/lib/proyectos";
 import LogoutButton from "../LogoutButton";
 
 const ESTADOS = [
@@ -13,7 +13,7 @@ const ESTADOS = [
   { id: "resuelto", label: "Resuelto", cls: "on-done" },
 ];
 
-const FILTROS = [
+const FILTROS_BASE = [
   { id: "todos", label: "Todos" },
   { id: "bug", label: "Bugs" },
   { id: "mejora", label: "Mejoras" },
@@ -79,6 +79,11 @@ function Cuerpo({ r }) {
 }
 
 export default function PanelView({ proyecto, initialReportes }) {
+  const TIPOS = tiposDe(proyecto);
+  const FILTROS = proyecto.sinBugs
+    ? FILTROS_BASE.filter((f) => f.id !== "bug")
+    : FILTROS_BASE;
+
   const [reportes, setReportes] = useState(initialReportes);
   const [error, setError] = useState("");
   const [filtro, setFiltro] = useState("todos");

@@ -13,6 +13,10 @@ const TIPO_OPTS = [
 ];
 
 export default function ReportForm({ proyecto }) {
+  const tipoOpts = proyecto.sinBugs
+    ? TIPO_OPTS.filter((o) => o.id !== "bug")
+    : TIPO_OPTS;
+
   const [tipo, setTipo] = useState(null);
   const [titulo, setTitulo] = useState("");
   const [desc, setDesc] = useState("");
@@ -117,8 +121,11 @@ export default function ReportForm({ proyecto }) {
           <form className="card" onSubmit={enviarReporte}>
             <div className="field">
               <label>¿Qué tipo de reporte es?</label>
-              <div className="type-grid">
-                {TIPO_OPTS.map((o) => (
+              <div
+                className="type-grid"
+                style={{ gridTemplateColumns: `repeat(${tipoOpts.length}, 1fr)` }}
+              >
+                {tipoOpts.map((o) => (
                   <div
                     key={o.id}
                     className={`type-opt${tipo === o.id ? " sel" : ""}`}
